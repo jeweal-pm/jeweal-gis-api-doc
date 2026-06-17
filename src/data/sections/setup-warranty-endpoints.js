@@ -168,7 +168,7 @@ export default [
     description: "Step 6 — Generate warranty card PDF for selected inventory items. Response is application/pdf.",
     requestBody: {
       po_product_ids: ["6a27eab89ea841c77650f53c"],
-      website_url: "ananta.gis247.net",
+      website_url: "demo3.gis247.net",
       type: "",
       skip_logo_fetch: true,
     },

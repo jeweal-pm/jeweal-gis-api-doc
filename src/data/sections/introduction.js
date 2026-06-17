@@ -93,7 +93,7 @@ export default {
         guide: [
           {
             title: "Login to your account",
-            body: "Every integration starts with your store domain (example: ananta.gis247.net for Demo Jewelry Bangkok). Call check-store to confirm the domain — the response org_name is Demo Jewelry Bangkok. Then store-login with store name, email, and password. The authToken in the response is your admin JWT — send it as the authorization header on all protected routes. PIN login and password reset use the same Auth module.",
+            body: "Every integration starts with your store domain (example: demo3.gis247.net for Demo Jewelry Bangkok). Call check-store to confirm the domain — the response org_name is Demo Jewelry Bangkok. Then store-login with store name, email, and password. The authToken in the response is your admin JWT — send it as the authorization header on all protected routes. PIN login and password reset use the same Auth module.",
             links: [
               { label: "Check Store", target: { sectionId: "auth", subsectionId: "auth-web", endpointId: "check-store" } },
               { label: "Store Login", target: { sectionId: "auth", subsectionId: "auth-web", endpointId: "store-login" } },
@@ -407,7 +407,7 @@ export default {
       },
     ],
     apiBasics: [
-      { term: "Base URL", value: "https://gis247.net/api/v1", note: "All paths in this reference are appended to this host." },
+      { term: "Base URL", value: "Your assigned developer API host (see toolbar after sign-in)", note: "Not the public production URL. GIS issues a sandbox host per partner." },
       { term: "Method", value: "POST", note: "Nearly all GIS routes use POST with a JSON body." },
       { term: "Response", value: "JSON", note: "Success responses include data or success: true. Errors include code and message — see Errors." },
       { term: "GraphQL", value: "/App/graphql · /Inventory/graphql", note: "Lookup queries for dropdowns and reference data.", target: { sectionId: "graphql" } },

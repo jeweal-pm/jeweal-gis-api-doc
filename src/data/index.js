@@ -18,12 +18,12 @@ import graphql from './sections/graphql';
 
 // To add a new API module: copy _template.js, import below, and add to sections[].
 // To add endpoints to an existing module: edit that section file or its *-endpoints.js import.
-// Change baseUrl when pointing docs at UAT or another environment.
+// API base URL for this docs build.
 export const apiData = {
   title: "GIS API Explorer",
   subtitle: "Complete API Reference",
   version: "v1.0",
-  baseUrl: "https://gis247.net/api/v1",
+  baseUrl: "https://api.example.com",
   sections: [
     auth,
     introduction,

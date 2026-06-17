@@ -3,15 +3,15 @@
  *
  * Organisation: Demo Jewelry Bangkok (primary) or Demo Jewelry New York
  * Locations in samples: Bangkok or New York only
- * Domain: ananta.gis247.net (GIS demo environment)
+ * Domain: demo3.gis247.net (GIS demo environment)
  */
 export const DEMO = {
   orgBangkok: 'Demo Jewelry Bangkok',
   orgNewYork: 'Demo Jewelry New York',
 
-  storeName: 'ananta',
-  domain: 'ananta.gis247.net',
-  domainUrl: 'https://ananta.gis247.net/',
+  storeName: 'demo3',
+  domain: 'demo3.gis247.net',
+  domainUrl: 'https://demo3.gis247.net/',
 
   email: 'admin@demojewelry.com',
   userName: 'Admin',

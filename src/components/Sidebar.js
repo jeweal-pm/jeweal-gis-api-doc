@@ -25,7 +25,7 @@ function subsectionKey(sectionId, subsectionId) {
   return `${sectionId}::${subsectionId}`;
 }
 
-export default function Sidebar({ active, onSelect, isOpen, onClose }) {
+export default function Sidebar({ active, onSelect, isOpen, onClose, onLogout }) {
   const [expanded, setExpanded] = useState({});
   const [expandedSubsections, setExpandedSubsections] = useState({});
   const [expandedNested, setExpandedNested] = useState({});
@@ -253,6 +253,14 @@ export default function Sidebar({ active, onSelect, isOpen, onClose }) {
           </div>
         ))}
       </nav>
+
+      {onLogout && (
+        <div className="sidebar-footer">
+          <button type="button" className="sidebar-logout-btn" onClick={onLogout}>
+            Sign out
+          </button>
+        </div>
+      )}
     </aside>
   );
 }

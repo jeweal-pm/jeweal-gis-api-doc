@@ -16,10 +16,10 @@ export default {
           path: "/Auth/Web/check-store",
           title: "Check Store",
           description: "Verify that a store domain exists. Call this FIRST before login to validate the store domain.",
-          requestBody: { domain: "ananta.gis247.net" },
-          response: { success: true, storeName: "ananta", domain: "ananta.gis247.net", org_name: "Demo Jewelry Bangkok", logo: "https://gis247.s3.amazonaws.com/2022th0038/logo.png" },
+          requestBody: { domain: "demo3.gis247.net" },
+          response: { success: true, storeName: "demo3", domain: "demo3.gis247.net", org_name: "Demo Jewelry Bangkok", logo: "https://gis247.s3.amazonaws.com/2022th0038/logo.png" },
           params: [
-            { name: "domain", type: "string", required: true, description: "Store domain e.g. ananta.gis247.net or demo1.gis247.net" }
+            { name: "domain", type: "string", required: true, description: "Store domain e.g. demo3.gis247.net or demo1.gis247.net" }
           ]
         },
         {
@@ -28,7 +28,7 @@ export default {
           path: "/Auth/Web/store-Valid",
           title: "Validate Store Name",
           description: "Check if a store name is available or already registered.",
-          requestBody: { storeName: "ananta" },
+          requestBody: { storeName: "demo3" },
           response: { success: true, available: false, message: "Store name already taken" },
           params: [
             { name: "storeName", type: "string", required: true, description: "Store name to validate" }
@@ -60,12 +60,12 @@ export default {
           path: "/Auth/Web/store-login",
           title: "Store Login",
           description: "Authenticate a user with email, password and store name. Returns a JWT authToken used for all subsequent requests.",
-          requestBody: { email: "admin@demojewelry.com", password: "123456", storeName: "ananta" },
-          response: { success: true, authToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...", data: { first_name: "Admin", email: "admin@demojewelry.com", position: "Administrator", loginPIN: "123456", admin: { id: "67eba015592f7b47cd9e184e", name: "Admin", organisation_name: "Demo Jewelry Bangkok", domain: "https://ananta.gis247.net/", storeName: "ananta", timezone: "Asia/Bangkok" } } },
+          requestBody: { email: "admin@demojewelry.com", password: "123456", storeName: "demo3" },
+          response: { success: true, authToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...", data: { first_name: "Admin", email: "admin@demojewelry.com", position: "Administrator", loginPIN: "123456", admin: { id: "67eba015592f7b47cd9e184e", name: "Admin", organisation_name: "Demo Jewelry Bangkok", domain: "https://demo3.gis247.net/", storeName: "demo3", timezone: "Asia/Bangkok" } } },
           params: [
             { name: "email", type: "string", required: true, description: "Registered user email address" },
             { name: "password", type: "string", required: true, description: "User password" },
-            { name: "storeName", type: "string", required: true, description: "Store slug (Demo Jewelry Bangkok example: ananta)" }
+            { name: "storeName", type: "string", required: true, description: "Store slug (Demo Jewelry Bangkok example: demo3)" }
           ]
         },
         {
@@ -99,7 +99,7 @@ export default {
           path: "/Auth/Web/forgot-password",
           title: "Forgot Password",
           description: "Send a password reset OTP to the user's registered email address.",
-          requestBody: { email: "admin@demojewelry.com", storeName: "ananta" },
+          requestBody: { email: "admin@demojewelry.com", storeName: "demo3" },
           response: { success: true, message: "OTP sent to registered email", authToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
           params: [
             { name: "email", type: "string", required: true, description: "Registered email address" },
@@ -187,7 +187,7 @@ export default {
           path: "/Auth/Web/forgotPin",
           title: "Forgot PIN",
           description: "Trigger PIN reset using username, password and store name.",
-          requestBody: { username: "admin@demojewelry.com", password: "123456", storeName: "ananta" },
+          requestBody: { username: "admin@demojewelry.com", password: "123456", storeName: "demo3" },
           response: { success: true, message: "PIN reset link sent" },
           params: [
             { name: "username", type: "string", required: true, description: "User email/username" },
@@ -286,7 +286,7 @@ export default {
           path: "/Auth/Mobile/forgotPassword",
           title: "Mobile Forgot Password",
           description: "Trigger password reset for a mobile user.",
-          requestBody: { username: "admin@demojewelry.com", storeName: "ananta" },
+          requestBody: { username: "admin@demojewelry.com", storeName: "demo3" },
           response: { success: true, message: "Reset link sent", authToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
           params: [
             { name: "username", type: "string", required: true, description: "User email" },
@@ -312,7 +312,7 @@ export default {
           title: "Get Mobile Profile",
           description: "Get the current authenticated mobile user's profile.",
           requestBody: {},
-          response: { success: true, data: { id: "67eba015592f7b47cd9e184e", name: "Admin", email: "admin@demojewelry.com", position: "Administrator", storeName: "ananta" } },
+          response: { success: true, data: { id: "67eba015592f7b47cd9e184e", name: "Admin", email: "admin@demojewelry.com", position: "Administrator", storeName: "demo3" } },
           params: []
         },
         {

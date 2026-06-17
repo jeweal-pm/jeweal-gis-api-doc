@@ -943,7 +943,7 @@ export default {
                         thousand_separator: "."
                       },
                       image_type: "JPG",
-                      store_name: "ananta",
+                      store_name: "demo3",
                       upload_folder: "2022th0038"
                     }
                   },

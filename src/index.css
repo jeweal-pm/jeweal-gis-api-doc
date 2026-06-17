@@ -462,6 +462,7 @@ code, pre, .ref-mono {
 .overview-toolbar {
   display: flex;
   align-items: stretch;
+  flex-wrap: wrap;
   border-bottom: 1px solid var(--ref-border);
   background: #f8fafc;
 }

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import DocLink from './DocLink';
 import DocText from './DocText';
+import { apiData } from '../data';
 
 const QUICK_CARDS = [
   { icon: '🔐', title: 'Auth & Login', desc: 'Store login, JWT, and POS session tokens.', target: { sectionId: 'auth' }, color: '#2b61a8' },
@@ -191,16 +192,19 @@ export default function IntroductionGuide({ section, onNavigate }) {
         </section>
 
         <div className="intro-basics-strip">
-          {guideData.apiBasics.map(row => (
+          {guideData.apiBasics.map(row => {
+            const value = row.term === 'Base URL' ? apiData.baseUrl : row.value;
+            return (
             <div key={row.term} className="intro-basics-item">
               <span className="intro-basics-label">{row.term}</span>
               {row.target ? (
-                <DocLink onClick={() => onNavigate?.(row.target)}>{row.value}</DocLink>
+                <DocLink onClick={() => onNavigate?.(row.target)}>{value}</DocLink>
               ) : (
-                <code className="ref-mono intro-basics-value">{row.value}</code>
+                <code className="ref-mono intro-basics-value">{value}</code>
               )}
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
