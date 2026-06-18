@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { apiData } from '../data';
 import { countSectionEndpoints } from '../utils/apiHelpers';
 import DocLink from './DocLink';
-import DocText from './DocText';
 
 export default function Overview({ onSelectSection, onNavigate }) {
   const navigate = target => onNavigate?.(target) ?? onSelectSection?.(target);
@@ -30,34 +29,24 @@ export default function Overview({ onSelectSection, onNavigate }) {
 
   return (
     <div className="overview">
-      <div className="overview-toolbar">
-        <div className="overview-toolbar-section">
-          <span className="overview-toolbar-label">Base URL</span>
-          <div className="overview-toolbar-row">
-            <code className="ref-mono overview-toolbar-url">{apiData.baseUrl}</code>
-            <button
-              type="button"
-              className={`overview-toolbar-btn${copied ? ' overview-toolbar-btn--copied' : ''}`}
-              onClick={copyBaseUrl}
-            >
-              {copied ? 'Copied' : 'Copy'}
-            </button>
-          </div>
-        </div>
-        <div className="overview-toolbar-section overview-toolbar-section--code">
-          <span className="overview-toolbar-label">Headers</span>
-          <pre className="overview-toolbar-code ref-mono">
-            <DocLink
-              className="overview-toolbar-link"
-              onClick={() => navigate({ sectionId: 'auth', subsectionId: 'auth-web', endpointId: 'store-login' })}
-            >
-              authorization
-            </DocLink>
-            : {'<jwt>'}
-            {' · '}
-            <span className="overview-toolbar-key">Content-Type</span>: application/json
-          </pre>
-        </div>
+      <div className="overview-toolbar overview-toolbar--compact">
+        <code className="ref-mono overview-toolbar-url">{apiData.baseUrl}</code>
+        <button
+          type="button"
+          className={`overview-toolbar-btn${copied ? ' overview-toolbar-btn--copied' : ''}`}
+          onClick={copyBaseUrl}
+        >
+          {copied ? 'Copied' : 'Copy'}
+        </button>
+        <span className="overview-toolbar-hint ref-mono">
+          <DocLink
+            className="overview-toolbar-link"
+            onClick={() => navigate({ sectionId: 'auth', subsectionId: 'auth-web', endpointId: 'store-login' })}
+          >
+            authorization
+          </DocLink>
+          : {'<jwt>'}
+        </span>
       </div>
 
       <div className="overview-content">

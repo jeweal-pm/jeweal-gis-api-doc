@@ -14,7 +14,7 @@ import DocText from './DocText';
 
 export default function EndpointDetail({ endpoint, active, onNavigate }) {
   const [copied, setCopied] = useState(null);
-  const [sampleFormat, setSampleFormat] = useState('json');
+  const [sampleTab, setSampleTab] = useState('json');
 
   const copy = (text, key) => {
     navigator.clipboard.writeText(text).catch(() => {});
@@ -34,7 +34,9 @@ export default function EndpointDetail({ endpoint, active, onNavigate }) {
     ? buildXmlDocument('response', endpoint.response)
     : null;
   const neighbors = getEndpointNeighbors(apiData.sections, active);
-  const showXml = sampleFormat === 'xml';
+  const showJson = sampleTab === 'json';
+  const showXml = sampleTab === 'xml';
+  const showCurl = sampleTab === 'curl';
   const hasRequestSample = endpoint.requestBody != null && !isMultipart;
   const hasResponseSample = Boolean(hasXmlResponse);
 
@@ -265,46 +267,36 @@ export default function EndpointDetail({ endpoint, active, onNavigate }) {
 
       <div className="endpoint-detail-samples">
         <div className="endpoint-samples-head">
-          <p className="endpoint-samples-title ref-mono">
-            <span className="endpoint-samples-title-label">Samples</span>
-          </p>
-          <div className="endpoint-samples-actions">
-            {(hasRequestSample || hasResponseSample) && (
-              <div className="endpoint-format-toggle" role="group" aria-label="Sample format">
-                <button
-                  type="button"
-                  className={`endpoint-format-btn${!showXml ? ' endpoint-format-btn--active' : ''}`}
-                  onClick={() => setSampleFormat('json')}
-                >
-                  JSON
-                </button>
-                <button
-                  type="button"
-                  className={`endpoint-format-btn${showXml ? ' endpoint-format-btn--active' : ''}`}
-                  onClick={() => setSampleFormat('xml')}
-                >
-                  XML
-                </button>
-              </div>
-            )}
-            <button
-              type="button"
-              className="endpoint-postman-btn"
-              onClick={openPostman}
-              title="Run in Postman"
-            >
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                <path d="M8 5v14l11-7z" />
-              </svg>
-              Run in Postman
-            </button>
+          <div className="endpoint-format-toggle" role="tablist" aria-label="Sample type">
+            {['json', 'xml', 'curl'].map(tab => (
+              <button
+                key={tab}
+                type="button"
+                role="tab"
+                aria-selected={sampleTab === tab}
+                className={`endpoint-format-btn${sampleTab === tab ? ' endpoint-format-btn--active' : ''}`}
+                onClick={() => setSampleTab(tab)}
+              >
+                {tab.toUpperCase()}
+              </button>
+            ))}
           </div>
+          <button
+            type="button"
+            className="endpoint-postman-btn"
+            onClick={openPostman}
+            title="Run in Postman"
+          >
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            Run in Postman
+          </button>
         </div>
 
-        {hasRequestSample && !showXml && (
+        {showJson && hasRequestSample && (
           <CodeSample
             title="Request"
-            meta="application/json"
             onCopy={() => copy(JSON.stringify(endpoint.requestBody, null, 2), 'req')}
             copied={copied}
             copyKey="req"
@@ -313,10 +305,9 @@ export default function EndpointDetail({ endpoint, active, onNavigate }) {
           </CodeSample>
         )}
 
-        {hasResponseSample && !showXml && (
+        {showJson && hasResponseSample && (
           <CodeSample
             title="Response"
-            meta="application/json"
             onCopy={() => copy(JSON.stringify(endpoint.response, null, 2), 'res')}
             copied={copied}
             copyKey="res"
@@ -325,10 +316,9 @@ export default function EndpointDetail({ endpoint, active, onNavigate }) {
           </CodeSample>
         )}
 
-        {requestXml && showXml && (
+        {showXml && requestXml && (
           <CodeSample
             title="Request"
-            meta="application/xml"
             onCopy={() => copy(requestXml, 'req-xml')}
             copied={copied}
             copyKey="req-xml"
@@ -337,10 +327,9 @@ export default function EndpointDetail({ endpoint, active, onNavigate }) {
           </CodeSample>
         )}
 
-        {responseXml && showXml && (
+        {showXml && responseXml && (
           <CodeSample
             title="Response"
-            meta="application/xml"
             onCopy={() => copy(responseXml, 'res-xml')}
             copied={copied}
             copyKey="res-xml"
@@ -349,70 +338,51 @@ export default function EndpointDetail({ endpoint, active, onNavigate }) {
           </CodeSample>
         )}
 
-        <CodeSample
-          title="cURL"
-          onCopy={() => copy(curlCopyText, 'curl')}
-          copied={copied}
-          copyKey="curl"
-        >
-          <div style={{ display: 'flex', overflowX: 'auto', overflowY: 'auto', maxHeight: 400, background: '#f6f8fa' }}>
-            <div style={{
-              padding: '14px 0',
-              userSelect: 'none',
-              flexShrink: 0,
-              borderRight: '1px solid #d0d7de',
-              minWidth: 36,
-              textAlign: 'right',
-            }}>
-              {curlSegments.map((_, i) => (
-                <div key={i} className="ref-mono" style={{ fontSize: 12, lineHeight: '1.75em', padding: '0 10px', color: '#8c959f' }}>
-                  {i + 1}
-                </div>
-              ))}
+        {showCurl && (
+          <CodeSample
+            title="cURL"
+            onCopy={() => copy(curlCopyText, 'curl')}
+            copied={copied}
+            copyKey="curl"
+          >
+            <div className="code-sample-curl">
+              <pre className="ref-mono code-sample-curl-pre">
+                {curlSegments.map(row => (
+                  <span key={row.key} className="code-sample-curl-line">
+                    {row.key === 'a' ? (
+                      <>
+                        <span className="curl-kw">curl</span>
+                        {' '}<span className="curl-flag">{row.kw}</span>
+                        {' '}<span className="curl-method">{row.arg}</span>
+                      </>
+                    ) : row.kw === '--url' ? (
+                      <>
+                        {row.pre}
+                        <span className="curl-flag">{row.kw}</span>
+                        {' '}<span className="curl-url">{row.arg}</span>
+                      </>
+                    ) : (
+                      <>
+                        {row.pre}
+                        <span className="curl-flag">{row.kw}</span>
+                        {' '}
+                        <span className="curl-val">{row.arg}</span>
+                      </>
+                    )}
+                    {row.cont && <span className="curl-cont"> \</span>}
+                  </span>
+                ))}
+              </pre>
             </div>
-            <pre className="ref-mono" style={{
-              padding: '14px 16px',
-              margin: 0,
-              fontSize: 12,
-              color: '#24292f',
-              lineHeight: 1.75,
-              overflowX: 'auto',
-              flex: 1,
-              background: '#f6f8fa',
-            }}>
-              {curlSegments.map(row => (
-                <span key={row.key} style={{ display: 'block' }}>
-                  {row.key === 'a' ? (
-                    <>
-                      <span style={{ color: '#cf222e' }}>curl</span>
-                      {' '}<span style={{ color: '#8250df' }}>{row.kw}</span>
-                      {' '}<span style={{ color: methodColor, fontWeight: 600 }}>{row.arg}</span>
-                    </>
-                  ) : row.kw === '--url' ? (
-                    <>
-                      {row.pre}
-                      <span style={{ color: '#8250df' }}>{row.kw}</span>
-                      {' '}<span style={{ color: '#0550ae' }}>{row.arg}</span>
-                    </>
-                  ) : (
-                    <>
-                      {row.pre}
-                      <span style={{ color: '#8250df' }}>{row.kw}</span>
-                      {' '}
-                      <span style={{ color: '#0a3069' }}>{row.arg}</span>
-                    </>
-                  )}
-                  {row.cont && <span style={{ color: '#57606a' }}> \</span>}
-                </span>
-              ))}
-            </pre>
-          </div>
-        </CodeSample>
+          </CodeSample>
+        )}
 
-        {!hasRequestSample && !hasResponseSample && (
-          <p style={{ color: '#57606a', fontSize: 13, margin: 0 }}>
-            No samples documented for this operation yet.
-          </p>
+        {showJson && !hasRequestSample && !hasResponseSample && (
+          <p className="endpoint-samples-empty">No request or response sample for this endpoint.</p>
+        )}
+
+        {showXml && !requestXml && !responseXml && (
+          <p className="endpoint-samples-empty">No request or response sample for this endpoint.</p>
         )}
 
         {(neighbors.prev || neighbors.next) && (

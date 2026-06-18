@@ -788,10 +788,10 @@ code, pre, .ref-mono {
   min-width: 0;
   overflow-y: auto;
   background: #f6f8fa;
-  padding: 40px 40px 56px;
+  padding: 24px 28px 48px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
 }
 
 .endpoint-samples-head {
@@ -799,7 +799,8 @@ code, pre, .ref-mono {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding-bottom: 4px;
+  padding-bottom: 8px;
+  margin-bottom: 4px;
   border-bottom: 1px solid #d0d7de;
 }
 
@@ -889,6 +890,94 @@ code, pre, .ref-mono {
 
 .endpoint-nav-link--next {
   margin-left: auto;
+}
+
+.code-sample {
+  border-radius: 8px;
+  overflow: clip;
+  border: 1px solid #d0d7de;
+  background: #fff;
+}
+
+.code-sample-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #fff;
+  border-bottom: 1px solid #eaeef2;
+}
+
+.code-sample--compact .code-sample-header {
+  padding: 6px 10px;
+}
+
+.code-sample-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #57606a;
+}
+
+.code-sample-copy {
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  color: #24292f;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: inherit;
+}
+
+.code-sample-copy--copied {
+  background: #dafbe1;
+  border-color: #4ac26b;
+  color: #1a7f37;
+}
+
+.code-sample-curl {
+  overflow: auto;
+  max-height: 360px;
+  background: #f6f8fa;
+}
+
+.code-sample-curl-pre {
+  padding: 12px 14px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+.code-sample-curl-line {
+  display: block;
+}
+
+.curl-kw { color: #cf222e; }
+.curl-flag { color: #8250df; }
+.curl-method { color: #0969da; font-weight: 600; }
+.curl-url { color: #0550ae; }
+.curl-val { color: #0a3069; }
+.curl-cont { color: #57606a; }
+
+.endpoint-samples-empty {
+  margin: 0;
+  font-size: 13px;
+  color: #57606a;
+}
+
+.overview-toolbar--compact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 32px;
+}
+
+.overview-toolbar-hint {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--ref-text-secondary);
 }
 
 .endpoint-params-table {
