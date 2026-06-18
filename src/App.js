@@ -94,7 +94,7 @@ export default function App() {
           )}
           {active && currentEndpoint && (
             <div key={`endpoint-${active.endpointId}`} className="app-endpoint-wrap app-page-enter">
-              <EndpointDetail endpoint={currentEndpoint} onNavigate={navigate} />
+              <EndpointDetail endpoint={currentEndpoint} active={active} onNavigate={navigate} />
             </div>
           )}
         </div>

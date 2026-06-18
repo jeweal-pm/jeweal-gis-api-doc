@@ -61,12 +61,6 @@ export default function Overview({ onSelectSection, onNavigate }) {
       </div>
 
       <div className="overview-content">
-        <p className="overview-lead">
-          <DocText onNavigate={navigate}>
-            All documented operations use POST with JSON bodies unless noted. Send your session token in the authorization header. POS endpoints may also require Pos-Authorization.
-          </DocText>
-        </p>
-
         <div className="overview-modules-head">
           <h2 className="overview-heading">API Modules</h2>
           <div className="overview-search-wrap">
@@ -102,9 +96,6 @@ export default function Overview({ onSelectSection, onNavigate }) {
                   <span className="overview-module-icon" aria-hidden>{section.icon}</span>
                   <span className="overview-module-body">
                     <span className="overview-module-name">{section.label}</span>
-                    <span className="overview-module-desc">
-                      <DocText onNavigate={navigate}>{section.description}</DocText>
-                    </span>
                   </span>
                   <span className="overview-module-count">{count}</span>
                 </button>
@@ -113,12 +104,6 @@ export default function Overview({ onSelectSection, onNavigate }) {
           </div>
         )}
 
-        <div className="overview-footnote">
-          <strong>Rate limiting:</strong>{' '}
-          Typical limit 1,000 requests/minute per key. See{' '}
-          <DocLink onClick={() => navigate({ sectionId: 'errors' })}>Errors</DocLink>
-          {' '}for <DocLink onClick={() => navigate({ sectionId: 'errors' })}>429</DocLink> responses.
-        </div>
       </div>
     </div>
   );

@@ -82,7 +82,11 @@ export default function PageHeader({
       )}
 
       {action && (
-        <button type="button" className="page-header-cta" onClick={action.onClick}>
+        <button
+          type="button"
+          className={`page-header-cta${action.className ? ` ${action.className}` : ''}`}
+          onClick={action.onClick}
+        >
           {action.label}
         </button>
       )}

@@ -251,6 +251,13 @@
   color: var(--ref-text-secondary);
 }
 
+.adv-fab--icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  justify-content: center;
+}
+
 .adv-token-panel {
   width: min(400px, 100vw);
   height: 100%;

@@ -2,14 +2,19 @@ import React, { useState } from 'react';
 import { apiData } from '../data';
 import { METHOD_COLORS } from '../constants/methodColors';
 import { buildCurlCopyText, buildCurlSegments } from '../utils/curlBuilder';
+import { getEndpointNeighbors } from '../utils/apiHelpers';
+import { buildXmlDocument } from '../utils/xmlBuilder';
+import { openPostman } from '../utils/postman';
 import MethodBadge from './MethodBadge';
 import JsonBlock from './JsonBlock';
+import XmlBlock from './XmlBlock';
 import CodeSample from './CodeSample';
 import DocLink from './DocLink';
 import DocText from './DocText';
 
-export default function EndpointDetail({ endpoint, onNavigate }) {
+export default function EndpointDetail({ endpoint, active, onNavigate }) {
   const [copied, setCopied] = useState(null);
+  const [sampleFormat, setSampleFormat] = useState('json');
 
   const copy = (text, key) => {
     navigator.clipboard.writeText(text).catch(() => {});
@@ -17,10 +22,21 @@ export default function EndpointDetail({ endpoint, onNavigate }) {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  const hasJsonBody = endpoint.requestBody != null;
+  const isMultipart = endpoint.contentType === 'multipart/form-data';
   const curlSegments = buildCurlSegments(apiData.baseUrl, endpoint);
   const curlCopyText = buildCurlCopyText(apiData.baseUrl, endpoint);
   const methodColor = (METHOD_COLORS[endpoint.method] || METHOD_COLORS.GET).pill.color;
+  const hasXmlResponse = endpoint.response && !endpoint.response.contentType;
+  const requestXml = endpoint.requestBody != null && !isMultipart
+    ? buildXmlDocument('request', endpoint.requestBody)
+    : null;
+  const responseXml = hasXmlResponse
+    ? buildXmlDocument('response', endpoint.response)
+    : null;
+  const neighbors = getEndpointNeighbors(apiData.sections, active);
+  const showXml = sampleFormat === 'xml';
+  const hasRequestSample = endpoint.requestBody != null && !isMultipart;
+  const hasResponseSample = Boolean(hasXmlResponse);
 
   return (
     <div className="endpoint-detail">
@@ -248,22 +264,46 @@ export default function EndpointDetail({ endpoint, onNavigate }) {
       </div>
 
       <div className="endpoint-detail-samples">
-        <p className="ref-mono" style={{
-          fontSize: 12,
-          color: '#57606a',
-          margin: 0,
-          paddingBottom: 4,
-          borderBottom: '1px solid #d0d7de',
-        }}>
-          <span style={{ color: '#24292f', fontWeight: 600 }}>Samples</span>
-          {' · '}
-          <span style={{ color: methodColor, fontWeight: 700 }}>{endpoint.method}</span>
-          {` ${endpoint.path}`}
-        </p>
+        <div className="endpoint-samples-head">
+          <p className="endpoint-samples-title ref-mono">
+            <span className="endpoint-samples-title-label">Samples</span>
+          </p>
+          <div className="endpoint-samples-actions">
+            {(hasRequestSample || hasResponseSample) && (
+              <div className="endpoint-format-toggle" role="group" aria-label="Sample format">
+                <button
+                  type="button"
+                  className={`endpoint-format-btn${!showXml ? ' endpoint-format-btn--active' : ''}`}
+                  onClick={() => setSampleFormat('json')}
+                >
+                  JSON
+                </button>
+                <button
+                  type="button"
+                  className={`endpoint-format-btn${showXml ? ' endpoint-format-btn--active' : ''}`}
+                  onClick={() => setSampleFormat('xml')}
+                >
+                  XML
+                </button>
+              </div>
+            )}
+            <button
+              type="button"
+              className="endpoint-postman-btn"
+              onClick={openPostman}
+              title="Run in Postman"
+            >
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              Run in Postman
+            </button>
+          </div>
+        </div>
 
-        {hasJsonBody && (
+        {hasRequestSample && !showXml && (
           <CodeSample
-            title="Request body"
+            title="Request"
             meta="application/json"
             onCopy={() => copy(JSON.stringify(endpoint.requestBody, null, 2), 'req')}
             copied={copied}
@@ -273,7 +313,7 @@ export default function EndpointDetail({ endpoint, onNavigate }) {
           </CodeSample>
         )}
 
-        {endpoint.response && (
+        {hasResponseSample && !showXml && (
           <CodeSample
             title="Response"
             meta="application/json"
@@ -285,9 +325,32 @@ export default function EndpointDetail({ endpoint, onNavigate }) {
           </CodeSample>
         )}
 
+        {requestXml && showXml && (
+          <CodeSample
+            title="Request"
+            meta="application/xml"
+            onCopy={() => copy(requestXml, 'req-xml')}
+            copied={copied}
+            copyKey="req-xml"
+          >
+            <XmlBlock xml={requestXml} />
+          </CodeSample>
+        )}
+
+        {responseXml && showXml && (
+          <CodeSample
+            title="Response"
+            meta="application/xml"
+            onCopy={() => copy(responseXml, 'res-xml')}
+            copied={copied}
+            copyKey="res-xml"
+          >
+            <XmlBlock xml={responseXml} />
+          </CodeSample>
+        )}
+
         <CodeSample
-          title="Example request"
-          meta="cURL"
+          title="cURL"
           onCopy={() => copy(curlCopyText, 'curl')}
           copied={copied}
           copyKey="curl"
@@ -346,10 +409,36 @@ export default function EndpointDetail({ endpoint, onNavigate }) {
           </div>
         </CodeSample>
 
-        {!hasJsonBody && !endpoint.response && (
+        {!hasRequestSample && !hasResponseSample && (
           <p style={{ color: '#57606a', fontSize: 13, margin: 0 }}>
             No samples documented for this operation yet.
           </p>
+        )}
+
+        {(neighbors.prev || neighbors.next) && (
+          <div className="endpoint-nav-links">
+            {neighbors.prev ? (
+              <button
+                type="button"
+                className="endpoint-nav-link"
+                onClick={() => onNavigate?.(neighbors.prev.selection)}
+                title={neighbors.prev.endpoint.title}
+              >
+                ← {neighbors.prev.endpoint.title}
+              </button>
+            ) : <span />}
+
+            {neighbors.next ? (
+              <button
+                type="button"
+                className="endpoint-nav-link endpoint-nav-link--next"
+                onClick={() => onNavigate?.(neighbors.next.selection)}
+                title={neighbors.next.endpoint.title}
+              >
+                {neighbors.next.endpoint.title} →
+              </button>
+            ) : null}
+          </div>
         )}
       </div>
     </div>

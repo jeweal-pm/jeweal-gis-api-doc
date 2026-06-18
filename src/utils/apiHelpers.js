@@ -36,6 +36,67 @@ export function findEndpoint(sections, selection) {
   return section.endpoints?.find(e => e.id === selection.endpointId) ?? null;
 }
 
+function getFlatEndpointEntries(sections) {
+  const entries = [];
+
+  (sections || []).forEach(section => {
+    if (section.guide) return;
+
+    (section.endpoints || []).forEach(endpoint => {
+      entries.push({
+        endpoint,
+        selection: { sectionId: section.id, endpointId: endpoint.id },
+      });
+    });
+
+    (section.subsections || []).forEach(subsection => {
+      (subsection.endpoints || []).forEach(endpoint => {
+        entries.push({
+          endpoint,
+          selection: {
+            sectionId: section.id,
+            subsectionId: subsection.id,
+            endpointId: endpoint.id,
+          },
+        });
+      });
+
+      (subsection.childGroups || []).forEach(group => {
+        (group.endpoints || []).forEach(endpoint => {
+          entries.push({
+            endpoint,
+            selection: {
+              sectionId: section.id,
+              subsectionId: subsection.id,
+              nestedGroupId: group.id,
+              endpointId: endpoint.id,
+            },
+          });
+        });
+      });
+    });
+  });
+
+  return entries;
+}
+
+export function getEndpointNeighbors(sections, selection) {
+  if (!selection?.endpointId) return { prev: null, next: null };
+  const entries = getFlatEndpointEntries(sections);
+  const index = entries.findIndex(item =>
+    item.selection.sectionId === selection.sectionId
+    && item.selection.subsectionId === selection.subsectionId
+    && item.selection.nestedGroupId === selection.nestedGroupId
+    && item.selection.endpointId === selection.endpointId
+  );
+
+  if (index < 0) return { prev: null, next: null };
+  return {
+    prev: index > 0 ? entries[index - 1] : null,
+    next: index < entries.length - 1 ? entries[index + 1] : null,
+  };
+}
+
 export function nestedNavKey(sectionId, subsectionId, groupId) {
   return `${sectionId}::${subsectionId}::${groupId}`;
 }
