@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { apiData } from '../data';
+import { API_MODES } from '../data/registry';
 import { nestedNavKey } from '../utils/apiHelpers';
 import NavItem from './NavItem';
 import GisLogo from './GisLogo';
+import SectionIcon from './SectionIcon';
 
 function Chevron({ open }) {
   return (
@@ -25,7 +26,7 @@ function subsectionKey(sectionId, subsectionId) {
   return `${sectionId}::${subsectionId}`;
 }
 
-export default function Sidebar({ active, onSelect, isOpen, onClose, onLogout }) {
+export default function Sidebar({ apiData, apiMode, onApiModeChange, active, onSelect, isOpen, onClose, onLogout }) {
   const [expanded, setExpanded] = useState({});
   const [expandedSubsections, setExpandedSubsections] = useState({});
   const [expandedNested, setExpandedNested] = useState({});
@@ -102,6 +103,36 @@ export default function Sidebar({ active, onSelect, isOpen, onClose, onLogout })
           <div className="sidebar-base-url-label">Base URL</div>
           <code className="ref-mono sidebar-base-url-value">{apiData.baseUrl}</code>
         </div>
+
+        <div className="sidebar-api-toggle" role="tablist" aria-label="API platform">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={apiMode === API_MODES.web}
+            className={`sidebar-api-toggle-btn${apiMode === API_MODES.web ? ' sidebar-api-toggle-btn--active' : ''}`}
+            onClick={() => onApiModeChange(API_MODES.web)}
+          >
+            GIS Web
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={apiMode === API_MODES.mobile}
+            className={`sidebar-api-toggle-btn${apiMode === API_MODES.mobile ? ' sidebar-api-toggle-btn--active' : ''}`}
+            onClick={() => onApiModeChange(API_MODES.mobile)}
+          >
+            Mobile APIs
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={apiMode === API_MODES.erp}
+            className={`sidebar-api-toggle-btn${apiMode === API_MODES.erp ? ' sidebar-api-toggle-btn--active' : ''}`}
+            onClick={() => onApiModeChange(API_MODES.erp)}
+          >
+            ERP APIs
+          </button>
+        </div>
       </div>
 
       <nav style={{ padding: '10px 0 40px', flex: 1 }} aria-label="API sections">
@@ -112,7 +143,9 @@ export default function Sidebar({ active, onSelect, isOpen, onClose, onLogout })
               className="sidebar-nav-btn"
               onClick={() => toggleSection(section.id, section)}
             >
-              <span style={{ fontSize: 15, lineHeight: 1 }} aria-hidden>{section.icon}</span>
+              <span className="sidebar-section-icon" aria-hidden>
+                <SectionIcon sectionId={section.id} fallbackIcon={section.icon} size={18} stroke="currentColor" />
+              </span>
               <span style={{ flex: 1, fontSize: 14, fontWeight: 600, color: 'var(--ref-text)', textAlign: 'left' }}>
                 {section.label}
               </span>
@@ -254,13 +287,14 @@ export default function Sidebar({ active, onSelect, isOpen, onClose, onLogout })
         ))}
       </nav>
 
-      {onLogout && (
-        <div className="sidebar-footer">
+      <div className="sidebar-footer">
+        <p className="sidebar-confidential">Private &amp; Confidential @GIS</p>
+        {onLogout && (
           <button type="button" className="sidebar-logout-btn" onClick={onLogout}>
             Sign out
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </aside>
   );
 }

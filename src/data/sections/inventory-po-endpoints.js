@@ -374,6 +374,12 @@ export default [
     path: "/Inventory/po/createPO",
     title: "Create Purchase Order",
     description: "Step 13 — Submit a new purchase order with line items, metal/stone specs, and delivery dates.",
+    // Open Flowchart — disabled for now
+    // externalDocs: {
+    //   kind: "flowchart",
+    //   description: "Open Inventory Architecture + Create PO flowchart",
+    //   url: "/flowcharts/inventory-po-flow.html",
+    // },
     requestBody: CREATE_PO_BODY,
     response: {
       code: 200,

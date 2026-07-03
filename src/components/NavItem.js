@@ -3,6 +3,7 @@ import MethodBadge from './MethodBadge';
 
 export default function NavItem({ endpoint, active, onClick, indent }) {
   const isActive = active?.endpointId === endpoint.id;
+  const isDocItem = Boolean(endpoint.readOnlyDoc);
 
   return (
     <button
@@ -11,7 +12,7 @@ export default function NavItem({ endpoint, active, onClick, indent }) {
       onClick={onClick}
       style={{ padding: `7px 12px 7px ${indent}px` }}
     >
-      <MethodBadge method={endpoint.method} />
+      {!isDocItem && <MethodBadge method={endpoint.method} />}
       <span className={`nav-item-title${isActive ? ' nav-item-title--active' : ''}`}>
         {endpoint.title}
       </span>

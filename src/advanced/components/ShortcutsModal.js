@@ -2,8 +2,10 @@ import React from 'react';
 
 const SHORTCUTS = [
   { keys: ['Ctrl', 'K'], mac: ['⌘', 'K'], desc: 'Open endpoint search' },
+  { keys: ['Ctrl', 'Shift', 'D'], mac: ['⌘', '⇧', 'D'], desc: 'Open developer tools' },
+  { keys: ['Ctrl', 'Shift', 'L'], mac: ['⌘', '⇧', 'L'], desc: 'Copy share link (on endpoint page)' },
   { keys: ['?'], mac: ['?'], desc: 'Show keyboard shortcuts' },
-  { keys: ['Esc'], mac: ['Esc'], desc: 'Close search, tokens, or shortcuts' },
+  { keys: ['Esc'], mac: ['Esc'], desc: 'Close panels' },
   { keys: ['↑', '↓'], mac: ['↑', '↓'], desc: 'Navigate search results' },
   { keys: ['Enter'], mac: ['Enter'], desc: 'Open highlighted endpoint' },
 ];

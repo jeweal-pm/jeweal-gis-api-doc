@@ -12,7 +12,7 @@ import CodeSample from './CodeSample';
 import DocLink from './DocLink';
 import DocText from './DocText';
 
-export default function EndpointDetail({ endpoint, active, onNavigate }) {
+export default function EndpointDetail({ apiData, endpoint, active, onNavigate }) {
   const [copied, setCopied] = useState(null);
   const [sampleTab, setSampleTab] = useState('json');
 
@@ -39,6 +39,120 @@ export default function EndpointDetail({ endpoint, active, onNavigate }) {
   const showCurl = sampleTab === 'curl';
   const hasRequestSample = endpoint.requestBody != null && !isMultipart;
   const hasResponseSample = Boolean(hasXmlResponse);
+  const externalDocs = endpoint.externalDocs || endpoint.response?.externalDocs || null;
+  // Open Flowchart — disabled for now
+  // const isFlowchartDoc = externalDocs?.kind === 'flowchart';
+  const isFlowchartDoc = false;
+  const isReadOnlyDoc = Boolean(endpoint.readOnlyDoc && externalDocs?.url);
+  const openExternalDocs = () => {
+    if (!externalDocs?.url) return;
+    window.open(externalDocs.url, '_blank', 'noopener,noreferrer');
+  };
+  const downloadExternalDocs = () => {
+    if (!externalDocs?.url) return;
+    const link = document.createElement('a');
+    link.href = externalDocs.url;
+    link.download = externalDocs.url.split('/').pop() || 'erp-guide';
+    link.click();
+  };
+
+  if (isReadOnlyDoc) {
+    return (
+      <div className="endpoint-detail">
+        <div className="endpoint-detail-docs">
+          <div className="endpoint-detail-url-bar">
+            <MethodBadge method={endpoint.method} />
+            <code className="ref-mono" style={{
+              flex: 1,
+              fontSize: 13,
+              color: '#24292f',
+              letterSpacing: 0,
+              wordBreak: 'break-all',
+            }}>
+              <span style={{ color: '#57606a' }}>{apiData.baseUrl}</span>
+              <span style={{ color: '#24292f', fontWeight: 600 }}>{endpoint.path}</span>
+            </code>
+            <button
+              type="button"
+              className={`endpoint-action-btn${copied === 'url' ? ' endpoint-action-btn--copied' : ''}`}
+              onClick={() => copy(apiData.baseUrl + endpoint.path, 'url')}
+              title="Copy full URL"
+            >
+              {copied === 'url' ? 'Copied' : 'Copy'}
+            </button>
+          </div>
+
+          <p className="endpoint-detail-desc endpoint-detail-desc--lead">
+            <DocText onNavigate={onNavigate}>{endpoint.description}</DocText>
+          </p>
+
+          <div style={{ marginTop: 18, display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              className="endpoint-action-btn"
+              onClick={openExternalDocs}
+              title={externalDocs.description || 'Open guide'}
+            >
+              Open Guide
+            </button>
+            {apiData?.platform === 'erp' && (
+              <>
+                <button
+                  type="button"
+                  className="endpoint-action-btn"
+                  onClick={() => onNavigate?.({ sectionId: 'erp-docs' })}
+                  title="Back to ERP Docs list"
+                >
+                  Back to ERP Docs
+                </button>
+                <button
+                  type="button"
+                  className="endpoint-action-btn"
+                  onClick={() => onNavigate?.({ sectionId: 'erp-flow' })}
+                  title="Back to ERP Flow list"
+                >
+                  Back to ERP Flow
+                </button>
+              </>
+            )}
+            <span className="ref-mono" style={{ fontSize: 11, color: '#57606a', wordBreak: 'break-all' }}>
+              {externalDocs.url}
+            </span>
+          </div>
+
+          {(neighbors.prev || neighbors.next) && (
+            <div className="endpoint-nav-links" style={{ marginTop: 28 }}>
+              {neighbors.prev ? (
+                <button
+                  type="button"
+                  className="endpoint-nav-link"
+                  onClick={() => onNavigate?.(neighbors.prev.selection)}
+                  title={neighbors.prev.endpoint.title}
+                >
+                  ← {neighbors.prev.endpoint.title}
+                </button>
+              ) : <span />}
+
+              {neighbors.next ? (
+                <button
+                  type="button"
+                  className="endpoint-nav-link endpoint-nav-link--next"
+                  onClick={() => onNavigate?.(neighbors.next.selection)}
+                  title={neighbors.next.endpoint.title}
+                >
+                  {neighbors.next.endpoint.title} →
+                </button>
+              ) : null}
+            </div>
+          )}
+        </div>
+
+        <div className="endpoint-detail-samples" style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <p className="endpoint-samples-empty">Document preview is opened with the buttons on the left.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="endpoint-detail">
@@ -68,6 +182,44 @@ export default function EndpointDetail({ endpoint, active, onNavigate }) {
         <p className="endpoint-detail-desc endpoint-detail-desc--lead">
           <DocText onNavigate={onNavigate}>{endpoint.description}</DocText>
         </p>
+
+        {externalDocs?.url && !isFlowchartDoc && (
+          <div style={{ marginBottom: 22, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              className="endpoint-action-btn"
+              onClick={openExternalDocs}
+              title={externalDocs.description || 'Open external guide'}
+            >
+              Open Guide
+            </button>
+            <button
+              type="button"
+              className="endpoint-action-btn"
+              onClick={downloadExternalDocs}
+              title="Download guide file"
+            >
+              Download
+            </button>
+            <span className="ref-mono" style={{ fontSize: 11, color: '#57606a', wordBreak: 'break-all' }}>
+              {externalDocs.url}
+            </span>
+          </div>
+        )}
+        {/* Open Flowchart — disabled for now
+        {externalDocs?.url && isFlowchartDoc && (
+          <div style={{ marginBottom: 22, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              className="endpoint-action-btn"
+              onClick={openExternalDocs}
+              title={externalDocs.description || 'Open flowchart'}
+            >
+              Open Flowchart
+            </button>
+          </div>
+        )}
+        */}
 
         {endpoint.errors?.length > 0 && (
           <div style={{ marginBottom: 32 }}>

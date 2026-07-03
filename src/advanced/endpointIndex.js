@@ -35,13 +35,14 @@ function makeEntry({ section, subsection, nestedGroup, endpoint }) {
 }
 
 let cachedIndex = null;
+let cachedSectionsRef = null;
 
-export function getEndpointIndex() {
-  if (cachedIndex) return cachedIndex;
+export function getEndpointIndex(sections = apiData.sections) {
+  if (cachedIndex && cachedSectionsRef === sections) return cachedIndex;
 
   const items = [];
 
-  for (const section of apiData.sections) {
+  for (const section of sections) {
     if (section.guide) continue;
 
     for (const endpoint of section.endpoints || []) {
@@ -61,23 +62,38 @@ export function getEndpointIndex() {
   }
 
   cachedIndex = items;
+  cachedSectionsRef = sections;
   return items;
 }
 
-export function searchEndpoints(query, limit = 20) {
-  const q = query.trim().toLowerCase();
-  const all = getEndpointIndex();
-  if (!q) return all.slice(0, limit);
+const METHOD_PREFIX = /^(get|post|put|delete|patch|graphql)\s*:\s*(.*)$/i;
+
+function parseSearchQuery(query) {
+  const trimmed = query.trim();
+  const match = trimmed.match(METHOD_PREFIX);
+  if (!match) return { method: null, text: trimmed.toLowerCase() };
+  return { method: match[1].toUpperCase(), text: match[2].trim().toLowerCase() };
+}
+
+export function searchEndpoints(query, limit = 20, sections = apiData.sections) {
+  const { method, text: q } = parseSearchQuery(query);
+  const all = getEndpointIndex(sections);
+  if (!q && !method) return all.slice(0, limit);
 
   const scored = [];
   for (const item of all) {
+    if (method && item.endpoint.method !== method) continue;
+
     const title = item.endpoint.title.toLowerCase();
     const path = item.endpoint.path.toLowerCase();
     let score = 0;
-    if (title === q || path === q) score = 100;
+
+    if (!q) score = 50;
+    else if (title === q || path === q) score = 100;
     else if (title.startsWith(q) || path.startsWith(q)) score = 80;
     else if (title.includes(q) || path.includes(q)) score = 60;
     else if (item.searchText.includes(q)) score = 40;
+
     if (score > 0) scored.push({ item, score });
   }
 
@@ -85,8 +101,8 @@ export function searchEndpoints(query, limit = 20) {
   return scored.slice(0, limit).map(s => s.item);
 }
 
-export function findIndexEntry(selection) {
+export function findIndexEntry(selection, sections = apiData.sections) {
   if (!selection?.endpointId) return null;
   const key = `${selection.sectionId}::${selection.subsectionId || ''}::${selection.nestedGroupId || ''}::${selection.endpointId}`;
-  return getEndpointIndex().find(e => e.id === key) || null;
+  return getEndpointIndex(sections).find(e => e.id === key) || null;
 }

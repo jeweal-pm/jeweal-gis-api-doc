@@ -1,12 +1,14 @@
 import React, { useMemo, useState } from 'react';
-import { apiData } from '../data';
 import { countSectionEndpoints } from '../utils/apiHelpers';
 import DocLink from './DocLink';
+import SectionIcon from './SectionIcon';
 
-export default function Overview({ onSelectSection, onNavigate }) {
+export default function Overview({ apiData, apiMode, onSelectSection, onNavigate }) {
   const navigate = target => onNavigate?.(target) ?? onSelectSection?.(target);
   const [search, setSearch] = useState('');
   const [copied, setCopied] = useState(false);
+  const isMobile = apiMode === 'mobile';
+  const isErp = apiMode === 'erp';
 
   const filteredSections = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -15,7 +17,7 @@ export default function Overview({ onSelectSection, onNavigate }) {
     return modules.filter(
       s => s.label.toLowerCase().includes(q) || (s.description || '').toLowerCase().includes(q)
     );
-  }, [search]);
+  }, [search, apiData.sections]);
 
   const copyBaseUrl = async () => {
     try {
@@ -41,7 +43,13 @@ export default function Overview({ onSelectSection, onNavigate }) {
         <span className="overview-toolbar-hint ref-mono">
           <DocLink
             className="overview-toolbar-link"
-            onClick={() => navigate({ sectionId: 'auth', subsectionId: 'auth-web', endpointId: 'store-login' })}
+            onClick={() => navigate(
+              isMobile
+                ? { sectionId: 'mobile-auth', endpointId: 'mobile-login' }
+                : isErp
+                ? { sectionId: 'erp-flow', endpointId: 'erp-vendor-master-edit' }
+                : { sectionId: 'auth', subsectionId: 'auth-web', endpointId: 'store-login' }
+            )}
           >
             authorization
           </DocLink>
@@ -82,7 +90,9 @@ export default function Overview({ onSelectSection, onNavigate }) {
                   style={{ '--module-color': section.color || '#2b61a8' }}
                   onClick={() => onSelectSection?.({ sectionId: section.id })}
                 >
-                  <span className="overview-module-icon" aria-hidden>{section.icon}</span>
+                  <span className="overview-module-icon" aria-hidden>
+                    <SectionIcon sectionId={section.id} fallbackIcon={section.icon} size={20} stroke="currentColor" />
+                  </span>
                   <span className="overview-module-body">
                     <span className="overview-module-name">{section.label}</span>
                   </span>

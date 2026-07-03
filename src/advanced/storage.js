@@ -55,3 +55,20 @@ export function loadTokens() {
 export function saveTokens(tokens) {
   writeJson(STORAGE_KEYS.tokens, tokens);
 }
+
+export function loadNotes() {
+  return readJson(STORAGE_KEYS.notes, {});
+}
+
+export function saveNote(endpointId, text) {
+  const notes = loadNotes();
+  const trimmed = text.trim();
+  if (trimmed) notes[endpointId] = trimmed;
+  else delete notes[endpointId];
+  writeJson(STORAGE_KEYS.notes, notes);
+  return notes;
+}
+
+export function getNote(endpointId, notes) {
+  return notes?.[endpointId] || '';
+}

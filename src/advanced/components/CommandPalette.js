@@ -51,6 +51,7 @@ export default function CommandPalette({
   open,
   onClose,
   onNavigate,
+  sections,
   recent,
   bookmarks,
   onToggleBookmark,
@@ -61,9 +62,9 @@ export default function CommandPalette({
   const inputRef = useRef(null);
 
   const results = useMemo(() => {
-    if (query.trim()) return searchEndpoints(query, 25);
+    if (query.trim()) return searchEndpoints(query, 25, sections);
     return [];
-  }, [query]);
+  }, [query, sections]);
 
   const bookmarkSlice = bookmarks.slice(0, 8);
   const recentSlice = recent.filter(r => !bookmarks.some(b => b.id === r.id)).slice(0, 8);
@@ -123,7 +124,7 @@ export default function CommandPalette({
             ref={inputRef}
             type="search"
             className="adv-palette-input"
-            placeholder="Search endpoints by name, path, or module…"
+            placeholder="Search endpoints… try post: inventory or get: customer"
             value={query}
             onChange={e => setQuery(e.target.value)}
             aria-autocomplete="list"
@@ -184,9 +185,9 @@ export default function CommandPalette({
         </div>
 
         <div className="adv-palette-footer">
+          <span><kbd className="adv-kbd">post:</kbd> filter by method</span>
           <span><kbd className="adv-kbd">↑↓</kbd> navigate</span>
           <span><kbd className="adv-kbd">↵</kbd> open</span>
-          <span><kbd className="adv-kbd">?</kbd> shortcuts</span>
         </div>
       </div>
     </div>

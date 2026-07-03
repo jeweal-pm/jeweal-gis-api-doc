@@ -3,7 +3,7 @@ export default {
       label: "Auth",
       icon: "\uD83D\uDD10",
       color: "#0ea5e9",
-      description: "Web and mobile authentication \u2014 store verification, login, OTP, password reset, POS tokens, and sessions.",
+      description: "Web authentication — store verification, login, OTP, password reset, POS tokens, and sessions.",
       subsections: [
         {
           id: "auth-web",
@@ -229,114 +229,6 @@ export default {
           response: { success: true, message: "Logged out successfully" },
           params: [
             { name: "authToken", type: "string", required: true, description: "Active JWT token to invalidate" }
-          ]
-        }
-      ]
-        },
-        {
-          id: "auth-mobile",
-          label: "Mobile",
-          color: "#6366f1",
-          endpoints: [
-        {
-          id: "mobile-login",
-          method: "POST",
-          path: "/Auth/Mobile/login",
-          title: "Mobile Login",
-          description: "Authenticate a mobile user with username, password and organization ID.",
-          requestBody: { username: "admin@demojewelry.com", organization_id: "67eba015592f7b47cd9e184e", password: "123456" },
-          response: { success: true, authToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...", user: { id: "67eba015592f7b47cd9e184e", name: "Admin" } },
-          params: [
-            { name: "username", type: "string", required: true, description: "User email address" },
-            { name: "organization_id", type: "string", required: true, description: "Organisation ID" },
-            { name: "password", type: "string", required: true, description: "User password" }
-          ]
-        },
-        {
-          id: "mobile-verification",
-          method: "POST",
-          path: "/Auth/Mobile/verification",
-          title: "Mobile OTP Verification",
-          description: "Verify OTP for mobile login flow.",
-          requestBody: { authToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...", otp: "83961" },
-          response: { success: true, verified: true, authToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
-          params: [
-            { name: "authToken", type: "string", required: true, description: "Token from mobile login" },
-            { name: "otp", type: "string", required: true, description: "6-digit OTP" }
-          ]
-        },
-        {
-          id: "mobile-quick-login",
-          method: "POST",
-          path: "/Auth/Mobile/loginquick",
-          title: "Mobile Quick Login (PIN)",
-          description: "Re-authenticate on mobile using a PIN for fast access.",
-          requestBody: { pin: "123456", authToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...", username: "admin@demojewelry.com", mobileUDID: "DK0jWo0FTNP5LFjfkPVv7oii86Re53HyOOI6rPrPAZZjiFW3RFC1fJBHIjg5" },
-          response: { success: true, authToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
-          params: [
-            { name: "pin", type: "string", required: true, description: "6-digit PIN" },
-            { name: "authToken", type: "string", required: true, description: "Current session token" },
-            { name: "username", type: "string", required: true, description: "User email" },
-            { name: "mobileUDID", type: "string", required: true, description: "Unique device identifier" }
-          ]
-        },
-        {
-          id: "mobile-forgot-password",
-          method: "POST",
-          path: "/Auth/Mobile/forgotPassword",
-          title: "Mobile Forgot Password",
-          description: "Trigger password reset for a mobile user.",
-          requestBody: { username: "admin@demojewelry.com", storeName: "demo3" },
-          response: { success: true, message: "Reset link sent", authToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
-          params: [
-            { name: "username", type: "string", required: true, description: "User email" },
-            { name: "storeName", type: "string", required: true, description: "Store name" }
-          ]
-        },
-        {
-          id: "mobile-resend-otp",
-          method: "POST",
-          path: "/Auth/Mobile/resendOtp",
-          title: "Mobile Resend OTP",
-          description: "Resend OTP for mobile authentication flow.",
-          requestBody: { authToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
-          response: { success: true, message: "OTP resent successfully" },
-          params: [
-            { name: "authToken", type: "string", required: true, description: "Auth token from mobile login step" }
-          ]
-        },
-        {
-          id: "mobile-get-profile",
-          method: "POST",
-          path: "/Mobile/getProfile",
-          title: "Get Mobile Profile",
-          description: "Get the current authenticated mobile user's profile.",
-          requestBody: {},
-          response: { success: true, data: { id: "67eba015592f7b47cd9e184e", name: "Admin", email: "admin@demojewelry.com", position: "Administrator", storeName: "demo3" } },
-          params: []
-        },
-        {
-          id: "mobile-get-voucher-list",
-          method: "POST",
-          path: "/Mobile/getVoucherList",
-          title: "Get Mobile Voucher List",
-          description: "Retrieve available vouchers for mobile POS session.",
-          requestBody: {},
-          response: { success: true, data: [{ _id: "63c28a219140560b1851274e", name: "POS Sale", code: "PS" }] },
-          params: []
-        },
-        {
-          id: "mobile-generate-pos-token",
-          method: "POST",
-          path: "/Mobile/auth/generatePOSAuthToken",
-          title: "Mobile Generate POS Token",
-          description: "Generate POS auth token for mobile POS sessions.",
-          requestBody: { location_id: "634f6d59ae461466b73d0959", currency: "THB", voucher_id: "63c28a219140560b1851274e" },
-          response: { success: true, posToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." },
-          params: [
-            { name: "location_id", type: "string", required: true, description: "Store location ID" },
-            { name: "currency", type: "string", required: true, description: "Currency code" },
-            { name: "voucher_id", type: "string", required: true, description: "Voucher ID" }
           ]
         }
       ]

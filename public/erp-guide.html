@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>ERP Integration Guide</title>
+    <style>
+      :root {
+        --blue-dark: #23467a;
+        --blue: #3a74ab;
+        --blue-soft: #d5e0ed;
+        --line: #ced8e5;
+        --text: #303b4a;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        color: var(--text);
+        background: #eceff4;
+      }
+      .page {
+        max-width: 760px;
+        margin: 14px auto;
+        background: #fff;
+        border: 1px solid #d7e0ea;
+        padding: 24px 28px 34px;
+      }
+      .title {
+        text-align: center;
+        color: var(--blue-dark);
+        font-size: 22px;
+        font-weight: 700;
+        margin: 8px 0 2px;
+      }
+      .subtitle {
+        text-align: center;
+        color: var(--blue);
+        font-style: italic;
+        font-size: 14px;
+        margin: 0 0 14px;
+      }
+      hr {
+        border: none;
+        border-top: 1px solid var(--line);
+        margin: 18px 0 26px;
+      }
+      .overview-title {
+        color: var(--blue-dark);
+        font-size: 18px;
+        margin: 0 0 6px;
+      }
+      .overview {
+        font-size: 13px;
+        line-height: 1.42;
+        margin-bottom: 18px;
+      }
+      .actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 0 0 14px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 7px 11px;
+        border: 1px solid #9fb5cd;
+        border-radius: 6px;
+        background: #fff;
+        color: #23467a;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background: #f2f6fb;
+      }
+      .step-head {
+        display: grid;
+        grid-template-columns: 76px 1fr;
+        background: var(--blue);
+        color: #fff;
+        margin-top: 12px;
+      }
+      .step-no {
+        background: var(--blue-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .step-title {
+        padding: 12px 14px;
+        font-size: 16px;
+        font-weight: 700;
+      }
+      .step-body {
+        border: 2px solid #2f6ea8;
+        border-top: none;
+        background: var(--blue-soft);
+        padding: 12px 14px;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      .step-body b {
+        color: var(--blue-dark);
+      }
+      .step-body ol {
+        margin: 8px 0 0 20px;
+        padding: 0;
+      }
+      .badge {
+        display: inline-block;
+        margin-top: 8px;
+        background: #fff;
+        border: 2px solid #335a8a;
+        color: #1e3f72;
+        border-radius: 8px;
+        padding: 6px 10px;
+        font-weight: 700;
+        font-size: 13px;
+      }
+      .codes {
+        margin-top: 12px;
+        border-collapse: collapse;
+        width: 100%;
+      }
+      .codes th, .codes td {
+        border: 1px solid #9fb5cd;
+        padding: 8px 10px;
+        text-align: left;
+        font-size: 13px;
+      }
+      .codes th {
+        background: #214b84;
+        color: #fff;
+      }
+      @media (max-width: 880px) {
+        .title { font-size: 20px; }
+        .overview-title { font-size: 22px; }
+        .overview { font-size: 13px; }
+        .step-title { font-size: 15px; }
+        .step-body { font-size: 13px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1 class="title">ERP Integration Guide</h1>
+      <p class="subtitle">Step-by-step configuration and setup instructions</p>
+      <hr />
+      <h2 class="overview-title">Overview</h2>
+      <div class="actions">
+        <button class="btn" type="button" onclick="window.history.length > 1 ? window.history.back() : window.location.assign('/')">Back to API Docs</button>
+      </div>
+      <p class="overview">
+        This guide gives a complete walkthrough for integrating ERP with GIS APIs.
+        Follow the steps in order to complete vendor setup, product posting,
+        variants posting, purchase order and sales sync.
+      </p>
+
+      <section>
+        <div class="step-head"><div class="step-no">1</div><div class="step-title">Activate ERP Integration</div></div>
+        <div class="step-body">
+          <b>How to activate:</b>
+          <ol>
+            <li>Go to <b>Settings</b> from the GIS left menu.</li>
+            <li>Open <b>Integrated Applications</b>.</li>
+            <li>Enable ERP and save.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section>
+        <div class="step-head"><div class="step-no">2</div><div class="step-title">Create ERP Location</div></div>
+        <div class="step-body">
+          <b>Important:</b>
+          <ol>
+            <li>Create the location in ERP.</li>
+            <li>Location values must match GIS location setup.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section>
+        <div class="step-head"><div class="step-no">3</div><div class="step-title">Post Product to ERP</div></div>
+        <div class="step-body">
+          <ol>
+            <li>Save product using <b>/APP/product/saveAdvance</b>.</li>
+            <li>Use ERP stone code mapping:</li>
+          </ol>
+          <table class="codes">
+            <thead><tr><th>Code</th><th>Category</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>C</td><td>Non-Variants</td><td>Standard products with no variant options</td></tr>
+              <tr><td>T</td><td>Variants</td><td>Products with multiple variant options</td></tr>
+              <tr><td>P</td><td>Design</td><td>Custom-designed or bespoke products</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <div class="step-head"><div class="step-no">4</div><div class="step-title">Post Product Variants</div></div>
+        <div class="step-body">
+          <ol>
+            <li>Save variants using <b>/APP/product/saveVariants</b>.</li>
+            <li>All linked variants are posted to ERP together.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section>
+        <div class="step-head"><div class="step-no">5</div><div class="step-title">Create Vendor on GIS</div></div>
+        <div class="step-body">
+          <ol>
+            <li>Create vendor in GIS using <b>/App/master/vendorMasterEdit</b>.</li>
+            <li>Use vendor type <b>ERP</b>.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section>
+        <div class="step-head"><div class="step-no">6</div><div class="step-title">Create Sale Order on ERP</div></div>
+        <div class="step-body">
+          <ol>
+            <li>Before sale order, create voucher in ERP.</li>
+            <li>Voucher type must be:</li>
+          </ol>
+          <span class="badge">voucher: "SO" (Sale Order)</span>
+        </div>
+      </section>
+
+      <section>
+        <div class="step-head"><div class="step-no">7</div><div class="step-title">Create POS Sale and Sync to ERP</div></div>
+        <div class="step-body">
+          <ol>
+            <li>Create PO with <b>/Inventory/po/createPO</b>.</li>
+            <li>Create sale with <b>/POS/customOrder/saveCustomOrder</b>.</li>
+            <li>Once saved, data is synced in ERP flow.</li>
+          </ol>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

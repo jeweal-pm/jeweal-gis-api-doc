@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { apiData } from './data';
+import { API_MODES, getApiData, loadApiMode, saveApiMode } from './data/registry';
 import { findEndpoint } from './utils/apiHelpers';
 import { getPageHeaderProps } from './utils/getPageHeaderProps';
 import Sidebar from './components/Sidebar';
@@ -20,10 +20,12 @@ function SectionGuide({ section, onNavigate }) {
 }
 
 export default function App() {
+  const [apiMode, setApiMode] = useState(() => loadApiMode());
   const [active, setActive] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const contentRef = useRef(null);
 
+  const apiData = getApiData(apiMode);
   const currentEndpoint = findEndpoint(apiData.sections, active);
   const currentSection = active
     ? apiData.sections.find(section => section.id === active.sectionId)
@@ -44,7 +46,17 @@ export default function App() {
     setSidebarOpen(false);
   };
 
+  const switchApiMode = mode => {
+    if (mode === apiMode) return;
+    saveApiMode(mode);
+    setApiMode(mode);
+    setActive(null);
+    window.history.replaceState(null, '', window.location.pathname);
+  };
+
   const headerProps = getPageHeaderProps({
+    apiData,
+    apiMode,
     active,
     currentSection,
     currentEndpoint,
@@ -63,6 +75,9 @@ export default function App() {
       )}
 
       <Sidebar
+        apiData={apiData}
+        apiMode={apiMode}
+        onApiModeChange={switchApiMode}
         active={active}
         onSelect={navigate}
         isOpen={sidebarOpen}
@@ -78,8 +93,8 @@ export default function App() {
 
         <div className="app-content" ref={contentRef}>
           {!active && (
-            <div key="overview" className="app-scroll app-page-enter">
-              <Overview onSelectSection={navigate} onNavigate={navigate} />
+            <div key={`overview-${apiMode}`} className="app-scroll app-page-enter">
+              <Overview apiData={apiData} apiMode={apiMode} onSelectSection={navigate} onNavigate={navigate} />
             </div>
           )}
           {active && !currentEndpoint && currentSection?.guide && (
@@ -94,7 +109,7 @@ export default function App() {
           )}
           {active && currentEndpoint && (
             <div key={`endpoint-${active.endpointId}`} className="app-endpoint-wrap app-page-enter">
-              <EndpointDetail endpoint={currentEndpoint} active={active} onNavigate={navigate} />
+              <EndpointDetail apiData={apiData} endpoint={currentEndpoint} active={active} onNavigate={navigate} />
             </div>
           )}
         </div>
@@ -102,6 +117,7 @@ export default function App() {
 
       {/* === ADVANCED LEVEL START === */}
       <AdvancedFeatures
+        apiData={apiData}
         active={active}
         onNavigate={navigate}
         currentEndpoint={currentEndpoint}

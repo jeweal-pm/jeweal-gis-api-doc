@@ -1,5 +1,6 @@
 import React from 'react';
 import GisLogo from './GisLogo';
+import SectionIcon from './SectionIcon';
 
 function MenuIcon() {
   return (
@@ -14,6 +15,7 @@ export default function PageHeader({
   menuExpanded,
   logo = false,
   icon,
+  iconSectionId,
   title,
   subtitle,
   stats,
@@ -56,7 +58,9 @@ export default function PageHeader({
         <div className="page-header-brand">
           {logo && <GisLogo variant="hero" />}
           {icon && !logo && (
-            <span className="page-header-icon" aria-hidden>{icon}</span>
+            <span className="page-header-icon" aria-hidden>
+              <SectionIcon sectionId={iconSectionId} fallbackIcon={icon} size={20} stroke="currentColor" />
+            </span>
           )}
           <div className="page-header-text">
             <h1 className="page-header-title">{title}</h1>

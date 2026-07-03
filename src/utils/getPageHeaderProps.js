@@ -1,4 +1,4 @@
-import { apiData } from '../data';
+import { API_MODES } from '../data/registry';
 import { countSectionEndpoints, getSectionEndpoints } from './apiHelpers';
 
 const GUIDE_SUBTITLES = {
@@ -7,9 +7,11 @@ const GUIDE_SUBTITLES = {
 };
 
 /** Build shared PageHeader props from current navigation state. */
-export function getPageHeaderProps({ active, currentSection, currentEndpoint, onNavigate }) {
+export function getPageHeaderProps({ apiData, apiMode, active, currentSection, currentEndpoint, onNavigate }) {
   const apiModules = apiData.sections.filter(s => !s.guide);
   const totalEndpoints = apiModules.reduce((acc, section) => acc + countSectionEndpoints(section), 0);
+  const isMobile = apiMode === API_MODES.mobile;
+  const isErp = apiMode === API_MODES.erp;
 
   if (!active) {
     return {
@@ -21,10 +23,20 @@ export function getPageHeaderProps({ active, currentSection, currentEndpoint, on
         { value: String(apiModules.length), label: 'Modules' },
         { value: apiData.version, label: 'Version' },
       ],
-      action: {
-        label: 'Getting Started',
-        onClick: () => onNavigate({ sectionId: 'introduction' }),
-      },
+      action: isMobile
+        ? {
+            label: 'Mobile Login',
+            onClick: () => onNavigate({ sectionId: 'mobile-auth', endpointId: 'mobile-login' }),
+          }
+        : isErp
+        ? {
+            label: 'ERP Flow',
+            onClick: () => onNavigate({ sectionId: 'erp-flow', endpointId: 'erp-vendor-master-edit' }),
+          }
+        : {
+            label: 'Getting Started',
+            onClick: () => onNavigate({ sectionId: 'introduction' }),
+          },
     };
   }
 
@@ -59,6 +71,7 @@ export function getPageHeaderProps({ active, currentSection, currentEndpoint, on
     const operationCount = getSectionEndpoints(currentSection).length;
     return {
       icon: currentSection.icon,
+      iconSectionId: currentSection.id,
       title: currentSection.label,
       subtitle: currentSection.description,
       meta: `${operationCount} operations`,
