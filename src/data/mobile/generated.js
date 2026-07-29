@@ -892,7 +892,7 @@ export default [
         "id": "mobile-quotation-getquatationlist-getquatationlist",
         "method": "POST",
         "path": "/Mobile/quatation/getQuatationList",
-        "title": "GetQuatationList",
+        "title": "GetQuotationList",
         "description": "Mobile API — /Mobile/quatation/getQuatationList.",
         "requestBody": {
           "customer_id": "63ac13fa680ae0592fc3be23"
@@ -928,7 +928,7 @@ export default [
         "id": "mobile-quotation-getquatationsublist-getquatationsublist",
         "method": "POST",
         "path": "/Mobile/quatation/getQuatationSubList",
-        "title": "GetQuatationSubList",
+        "title": "GetQuotationSubList",
         "description": "Mobile API — /Mobile/quatation/getQuatationSubList.",
         "requestBody": {
           "quotation_id": "64ac0afa5665a8403fbadcdf"
@@ -964,7 +964,7 @@ export default [
         "id": "mobile-quotation-removequatation-removequatation",
         "method": "POST",
         "path": "/Mobile/quatation/removeQuatation",
-        "title": "RemoveQuatation",
+        "title": "RemoveQuotation",
         "description": "Mobile API — /Mobile/quatation/removeQuatation.",
         "requestBody": {
           "quotation_id": "64a806dd8c17df4a395e5c5e"
@@ -1000,7 +1000,7 @@ export default [
         "id": "mobile-quotation-savequatation-savequatation",
         "method": "POST",
         "path": "/Mobile/quatation/saveQuatation",
-        "title": "SaveQuatation",
+        "title": "SaveQuotation",
         "description": "Mobile API — /Mobile/quatation/saveQuatation.",
         "requestBody": {
           "sell_info": {

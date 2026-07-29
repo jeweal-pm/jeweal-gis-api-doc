@@ -162,7 +162,9 @@ function makeEndpoint(item, folderPath, seenPaths, idCounts) {
   idCounts[baseId] = (idCounts[baseId] || 0) + 1;
   const id = idCounts[baseId] > 1 ? `${baseId}-${idCounts[baseId]}` : baseId;
 
-  const titleName = item.name.trim().replace(/\s+/g, ' ');
+  const titleName = item.name.trim().replace(/\s+/g, ' ')
+    // Backend/Postman uses "quatation"; show correct spelling in docs
+    .replace(/quatation/gi, (m) => (m[0] === 'Q' ? 'Quotation' : 'quotation'));
   const title = titleName.charAt(0).toUpperCase() + titleName.slice(1);
 
   return {
