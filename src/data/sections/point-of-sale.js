@@ -6,6 +6,7 @@ import receiveReceiveEndpoints from './pos-receive-receive-endpoints';
 import repairEndpoints from './pos-repair-endpoints';
 import quickviewEndpoints from './pos-quickview-endpoints';
 import dashboardEndpoints from './pos-dashboard-endpoints';
+import faroEndpoints from './pos-faro-endpoints';
 import { CATALOG_SAVE_BODY } from './pos-catalog-payloads';
 
 export default {
@@ -741,6 +742,12 @@ export default {
                       ]
                     }
                   ]
+                },
+        {
+                  id: "pos-faro",
+                  label: "Faro",
+                  color: "#0ea5e9",
+                  endpoints: faroEndpoints
                 },
         {
                   id: "pos-mix-match",
